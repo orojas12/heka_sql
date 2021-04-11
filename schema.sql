@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS ancillary_kits;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS employees;
-DROP TABLE IF EXISTS department_assets;
+DROP TABLE IF EXISTS it_assets;
 DROP TABLE IF EXISTS departments;
 DROP TABLE IF EXISTS distribution_centers;
 DROP TABLE IF EXISTS manufacturers;
@@ -30,16 +30,16 @@ CREATE TABLE IF NOT EXISTS distribution_centers (
 
 CREATE TABLE IF NOT EXISTS customers (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  first_name VARCHAR(50),
-  last_name VARCHAR(50),
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
   company VARCHAR(50),
-  email VARCHAR(50),
-  phone VARCHAR(50),
-  street VARCHAR(50),
-  city VARCHAR(50),
-  state VARCHAR(50),
-  zip VARCHAR(15),
-  dist_center INT,
+  email VARCHAR(50) NOT NULL,
+  phone VARCHAR(50) NOT NULL,
+  street VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  state VARCHAR(50) NOT NULL,
+  zip VARCHAR(15) NOT NULL,
+  dist_center INT NOT NULL,
   FOREIGN KEY (dist_center) 
     REFERENCES distribution_centers(id)
     ON UPDATE CASCADE
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS customers (
 );
 
 CREATE TABLE IF NOT EXISTS orders (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id VARCHAR(100) PRIMARY KEY,
   customer_id INT NOT NULL,
   ship_address_same_as_customer BOOLEAN NOT NULL,
   ship_street VARCHAR(50),
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
 CREATE TABLE IF NOT EXISTS vaccine_containers (
   id VARCHAR(100) PRIMARY KEY,
-  order_id INT,
+  order_id VARCHAR(100),
   manufacturer_id INT NOT NULL,
   dist_center INT NOT NULL,
   FOREIGN KEY (order_id)
@@ -75,12 +75,16 @@ CREATE TABLE IF NOT EXISTS vaccine_containers (
   FOREIGN KEY (manufacturer_id)
     REFERENCES manufacturers(id)
     ON UPDATE CASCADE
+    ON DELETE RESTRICT,
+  FOREIGN KEY (dist_center)
+    REFERENCES distribution_centers(id)
+    ON UPDATE CASCADE
     ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS ancillary_kits (
   id VARCHAR(100) PRIMARY KEY,
-  order_id INT,
+  order_id VARCHAR(100),
   manufacturer_id INT NOT NULL,
   dist_center INT NOT NULL,
   FOREIGN KEY (order_id)
